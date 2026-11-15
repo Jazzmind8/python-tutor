@@ -1,0 +1,1255 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Python kalandok</title>
+<style>
+:root{
+  /* Elrendezés: egy hosszú, olvasható oldal, modulonként külön szakasszal */
+  --bg:#d3ebe3; --surface:#ffffff; --fg:#2b2330; --muted:#6b5f70;
+  --accent:#0e8c85; --accent-soft:#dff3f1; --line:#ece3d6; --code-bg:#2b2538; --code-fg:#f5efe6;
+  --ok:#2e9b5c; --ok-soft:#e3f4ea; --warn:#e0712b;
+  --font-head:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body:"Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono:ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1f1a26; --surface:#2a2433; --fg:#f3ecf7; --muted:#b5a9bd;
+    --accent:#5fd1c9; --accent-soft:#1f3b3a; --line:#3d3447; --code-bg:#15111c; --code-fg:#f3ecf7;
+    --ok:#6fd49a; --ok-soft:#1f3b2c; --warn:#f2a06a; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1f1a26; --surface:#2a2433; --fg:#f3ecf7; --muted:#b5a9bd;
+  --accent:#5fd1c9; --accent-soft:#1f3b3a; --line:#3d3447; --code-bg:#15111c; --code-fg:#f3ecf7;
+  --ok:#6fd49a; --ok-soft:#1f3b2c; --warn:#f2a06a; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 var(--font-body);
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px));}
+main{max-width:760px;margin:0 auto;padding-block:24px 48px;display:grid;gap:28px}
+h1,h2,h3{font-family:var(--font-head);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:2rem} h2{font-size:1.5rem} h3{font-size:1.1rem}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.hero{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:28px;display:grid;gap:14px;box-shadow:0 6px 0 var(--line)}
+.hero h1{color:var(--accent)}
+.hero .emoji{font-size:2.2rem}
+.kicker{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:4px 12px;font-size:.85rem}
+.modules{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.modules a{display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;text-decoration:none;color:var(--fg)}
+.modules strong{display:block;font-family:var(--font-head)}
+.modules span{color:var(--muted);font-size:.9rem}
+.module{display:grid;gap:14px}
+.module > header{border-bottom:2px solid var(--accent);padding-bottom:8px}
+.module > header p{color:var(--muted);margin-top:6px}
+.lesson{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:10px;min-width:0}
+.lesson-head{display:flex;align-items:flex-start;gap:10px}
+.lesson-head label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;min-width:0}
+.lesson-head input{margin-top:6px;width:18px;height:18px;flex:none;accent-color:var(--ok)}
+.lesson-head h3 small{display:block;font-family:var(--font-body);font-size:.8rem;color:var(--muted);font-weight:400}
+.bonus{background:var(--surface);border:2px dashed var(--accent);border-radius:18px;padding:20px;display:grid;gap:10px;min-width:0}
+.intro{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:22px;display:grid;gap:12px;min-width:0}
+.intro ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.lesson.done{border-color:var(--ok)}
+.lesson.done h3{color:var(--ok)}
+.task{background:var(--accent-soft);border-radius:14px;padding:12px 14px;font-size:.95rem}
+.task b{color:var(--accent)}
+.lesson > p code, .task code{color:var(--warn);font-weight:700;background:none;padding:0;font-size:1em}
+details{border:1px solid var(--line);border-radius:8px;overflow:hidden;min-width:0}
+summary{cursor:pointer;padding:8px 12px;font-weight:600;color:var(--accent);background:var(--surface)}
+summary::marker{color:var(--muted)}
+details pre{margin:0;background:var(--code-bg);color:var(--code-fg);padding:14px;overflow-x:auto;font:13.5px/1.55 var(--font-mono)}
+details .explain{padding:10px 12px;font-size:.92rem;color:var(--muted);border-top:1px solid var(--line)}
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:14px}
+.quiz .q{display:grid;gap:6px}
+.quiz .q p{font-weight:600}
+.quiz label{display:flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.quiz label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.quiz input{accent-color:var(--accent)}
+.quiz button{justify-self:start;font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}
+.quiz button:focus-visible,.lesson input:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.score{font-family:var(--font-head);font-size:1.1rem}
+.score.good{color:var(--ok)} .score.meh{color:var(--warn)}
+.note{font-size:.9rem;color:var(--muted)}
+.tip{background:var(--surface);border-left:4px solid var(--warn);border-radius:8px;padding:12px 14px}
+.progress{font-size:.9rem;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<main>
+  <section class="hero">
+    <div class="emoji" aria-hidden="true">🐍</div>
+    <div class="kicker">Programozás kezdőknek</div>
+    <h1>Python kalandok – a nulláról</h1>
+    <p>Három nagy kaland vár. Mindegyikben rövid magyarázat, kipróbálható kódpélda, feladat és kvíz áll. A programokat a saját gépeden is futtathatod, és a végén saját játékot is készítesz!</p>
+    <div class="facts">
+      <span class="chip">3 modul</span>
+      <span class="chip">27 lecke</span>
+      <span class="chip">3 kvíz + játék</span>
+    </div>
+    <p class="progress" id="progress">Haladás: 0 / 27 lecke kész</p>
+    <p class="note">Tipp: ne másold ki a kódot, írd be te magad! Így jobban megjegyzed. A „Példakód megnyitása” sorra kattintva látod a kódot.</p>
+  </section>
+
+  <section class="intro">
+    <div class="kicker">Bevezetés</div>
+    <h2>Mi az a Python?</h2>
+    <p>A Python általános célú programozási nyelv. Azért népszerű, mert a kódja olvasható, rövid, és szinte úgy néz ki, mint egy angol nyelvű mondat.</p>
+
+    <h3>Rövid történet</h3>
+    <ul>
+      <li><b>1989:</b> Guido van Rossum holland programozó karácsonyi szünetben kezdi fejleszteni a nyelvet.</li>
+      <li><b>1991:</b> megjelenik az első nyilvános változat. A nevét a Monty Python humoristacsoport után kapta, nem a kígyóról.</li>
+      <li><b>2000 és 2008:</b> megjelenik a Python 2, majd a Python 3. A Python 3 tisztább, de nem teljesen kompatibilis az előzővel.</li>
+      <li><b>2020:</b> a Python 2 támogatása megszűnt, ma már a Python 3 a használt változat.</li>
+    </ul>
+
+    <h3>Miben más, mint egy objektumorientált nyelv?</h3>
+    <p>A Python <b>többparadigmás</b> nyelv. Támogatja az objektumorientált programozást (osztályok, objektumok), de nem kötelező használni. Lehet egyszerű, eljárásos stílusban is írni, ahogy most mi is tanuljuk. A Java vagy a C# nyelvben viszont minden kódnak osztályban kell lennie. A Pythonban a változók típusát sem kell előre megadni, és a program közvetlenül futtatható, külön fordítási lépés nélkül.</p>
+
+    <h3>Mire használják az életben?</h3>
+    <ul>
+      <li>Weboldalak és szerverek készítése (például a Django keretrendszerrel).</li>
+      <li>Adatelemzés és tudományos számítások (például a pandas és a NumPy könyvtárral).</li>
+      <li>Mesterséges intelligencia és gépi tanulás (például a TensorFlow és a PyTorch keretrendszerrel).</li>
+      <li>Ismétlődő feladatok automatizálása: fájlok átnevezése, jelentések készítése.</li>
+      <li>Oktatás: a kezdők első nyelve, mert könnyen olvasható.</li>
+    </ul>
+
+    <h3>Kik használják?</h3>
+    <p>Nagy cégek, például a Google, a YouTube, az Instagram, a Spotify és a NASA is használja különböző feladatokra. Sok egyetem és iskola tanítja Pythont kezdő programozási nyelvként.</p>
+  </section>
+
+  <nav class="modules" aria-label="Modulok">
+    <a href="#m1"><strong>I. modul – Alapok</strong><span>változók, elágazás, ciklusok</span></a>
+    <a href="#m2"><strong>II. modul – Adatok</strong><span>listák, tömbök, ciklusok</span></a>
+    <a href="#m3"><strong>III. modul – Függvények</strong><span>eljárások, függvények, kisprojektek</span></a>
+  </nav>
+
+  <!-- ===================== I. MODUL ===================== -->
+  <section id="m1" class="module">
+    <header>
+      <div class="kicker">I. modul</div>
+      <h2>Alapok</h2>
+      <p>A cél, hogy önállóan tudj egyszerű programokat írni és olvasni.</p>
+    </header>
+
+    <article class="lesson" data-key="m1-1">
+      <div class="lesson-head"><label><input type="checkbox"><h3>1. Az első program <small>4 óra</small></h3></label></div>
+      <p>A Python program utasításokból áll, amelyeket a gép sorban, felülről lefelé hajt végre. A <code>print()</code> parancs kiírja a szöveget a képernyőre. A szöveget idézőjelek közé írjuk.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>print("Hello, világ!")
+print("Ez az első programom.")
+print(2 + 3)</code></pre>
+        <div class="explain">A harmadik sorban nincs idézőjel, mert a Python a számot kiszámolja, és az 5-öt írja ki.</div>
+      </details>
+      <div class="task"><b>Feladat:</b> írd ki a nevedet és a kedvenc állatodat két külön sorban.</div>
+    </article>
+
+    <article class="lesson" data-key="m1-2">
+      <div class="lesson-head"><label><input type="checkbox"><h3>2. Változók és típusok <small>4 óra</small></h3></label></div>
+      <p>A változó olyan doboz, amelynek nevet adunk, és értéket teszünk bele. Az értéknek típusa van: <b>int</b> (egész szám), <b>float</b> (tizedes szám), <b>str</b> (szöveg) és <b>bool</b> (igaz vagy hamis). A <code>type()</code> megmondja, melyik típus.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>nev = "Anna"
+kor = 12
+magassag = 1.52
+kedvenc = True
+
+print(nev, kor, magassag)
+print(type(nev))       # str
+print(type(kor))       # int
+print(type(magassag))  # float
+print(type(kedvenc))   # bool</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> hozz létre egy változót a saját magasságoddal, és írasd ki a típusát.</div>
+    </article>
+
+    <article class="lesson" data-key="m1-3">
+      <div class="lesson-head"><label><input type="checkbox"><h3>3. Értékadás és műveletek <small>4 óra</small></h3></label></div>
+      <p>Az egyenlőségjel (<code>=</code>) értékadás: a jobb oldali értéket a bal oldali változóba teszi. Nem azt jelenti, hogy „egyenlő”. A számokkal szokásos műveleteket végezhetünk: <code>+ - * /</code>, egész osztás <code>//</code>, maradék <code>%</code> és hatványozás <code>**</code>.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>a = 7
+b = 2
+print(a + b)    # 9
+print(a - b)    # 5
+print(a * b)    # 14
+print(a / b)    # 3.5
+print(a // b)   # 3  (egész osztás)
+print(a % b)    # 1  (maradék)
+print(a ** b)   # 49
+
+a = a + 10      # a most 17
+print(a)</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> számold ki, hány perc van 3 órában, és hány maradék perc marad, ha 100 percet osztunk 60-nal.</div>
+    </article>
+
+    <article class="lesson" data-key="m1-4">
+      <div class="lesson-head"><label><input type="checkbox"><h3>4. Bemenet és kimenet <small>4 óra</small></h3></label></div>
+      <p>Az <code>input()</code> kérdez a felhasználótól, és szövegként ad vissza egy értéket. Számmal az <code>int()</code> vagy <code>float()</code> függvénnyel dolgozhatunk. Az f-stringben a <code>{}</code> jelek közé írt változó értéke kerül a szövegbe.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>nev = input("Mi a neved? ")
+kor = int(input("Hány éves vagy? "))
+print(f"Szia, {nev}! Jövőre {kor + 1} éves leszel.")</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> kérdezd meg a barátod nevét és kedvenc számát, és írj ki egy mondatot a kettővel.</div>
+    </article>
+
+    <article class="lesson" data-key="m1-5">
+      <div class="lesson-head"><label><input type="checkbox"><h3>5. Elágazás <small>4 óra</small></h3></label></div>
+      <p>Az <code>if</code> döntést hoz: ha a feltétel igaz, a behúzott sorok futnak le. Az <code>elif</code> és az <code>else</code> további lehetőségeket ad. A behúzás (4 szóköz) a Pythonban kötelező.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>pontszam = int(input("Pontszám (0-100): "))
+
+if pontszam &gt;= 90:
+    print("Jeles!")
+elif pontszam &gt;= 75:
+    print("Jó!")
+elif pontszam &gt;= 50:
+    print("Megfelelt.")
+else:
+    print("Gyakorolj még!")</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írj programot, amely megmondja, páros vagy páratlan-e egy beírt szám. (Tipp: <code>szam % 2</code>)</div>
+    </article>
+
+    <article class="lesson" data-key="m1-6">
+      <div class="lesson-head"><label><input type="checkbox"><h3>6. Igaz és hamis <small>4 óra</small></h3></label></div>
+      <p>Az összehasonlítások igaz vagy hamis értéket adnak: <code>==</code> (egyenlő), <code>!=</code> (nem egyenlő), <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>. A <code>and</code> akkor igaz, ha mindkét oldal igaz. Az <code>or</code> akkor igaz, ha legalább az egyik. A <code>not</code> megfordítja az értéket.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>eso = True
+napsut = False
+
+print(eso and napsut)   # False
+print(eso or napsut)    # True
+print(not eso)          # False
+
+x = 5
+print(x == 5)           # True
+print(x != 3)           # True</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írj programot, amely akkor írja ki, hogy „Mehetsz strandra”, ha süt a nap <i>és</i> nincs eső.</div>
+    </article>
+
+    <article class="lesson" data-key="m1-7">
+      <div class="lesson-head"><label><input type="checkbox"><h3>7. Számlálós ciklus <small>4 óra</small></h3></label></div>
+      <p>A <code>for</code> ciklus előre meghatározott számú alkalommal ismétel. A <code>range()</code> számsort ad meg: <code>range(5)</code> a 0, 1, 2, 3, 4 számokat adja (5-öt nem), <code>range(1, 6)</code> az 1-től 5-ig, a harmadik paraméter a lépésköz.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>for i in range(3):
+    print("Szia!", i)
+
+for i in range(10, 0, -2):
+    print(i)    # 10, 8, 6, 4, 2</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írasd ki a 1-től 10-ig a számok négyzetét.</div>
+    </article>
+
+    <article class="lesson" data-key="m1-8">
+      <div class="lesson-head"><label><input type="checkbox"><h3>8. Elöltesztelős ciklus <small>4 óra</small></h3></label></div>
+      <p>A <code>while</code> ciklus előbb ellenőriz: ha a feltétel igaz, lefut a ciklus törzse, ha hamis, egyszer sem. Fontos, hogy a törzsben változzon valami, különben a ciklus soha nem ér véget.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>szamlalo = 3
+while szamlalo &gt; 0:
+    print("Visszaszámlálás:", szamlalo)
+    szamlalo = szamlalo - 1
+print("Indul!")</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írj visszaszámlálást 10-től, és a végén írd ki: „Robbanás!”.</div>
+    </article>
+
+    <article class="lesson" data-key="m1-9">
+      <div class="lesson-head"><label><input type="checkbox"><h3>9. Játék: számkitaláló <small>4 óra</small></h3></label></div>
+      <p>Összerakjuk az eddigi tudást egy játékba. A gép választ egy titkos számot, a játékos tippel, a program pedig megmondja, hogy nagyobb vagy kisebb a tipp.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>import random
+
+titok = random.randint(1, 20)
+tipp = 0
+
+while tipp != titok:
+    tipp = int(input("Tippelj egy számot 1 és 20 között: "))
+    if tipp &lt; titok:
+        print("Nagyobb!")
+    elif tipp &gt; titok:
+        print("Kisebb!")
+
+print("Eltaláltad!")</code></pre>
+        <div class="explain">A <code>random</code> részletét a III. modulban tanuljuk. Most elég annyit tudni, hogy véletlen számot ad.</div>
+      </details>
+      <div class="task"><b>Feladat:</b> számold meg, hány tippből találta el a játékos a számot, és írd ki a végén.</div>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>Bónusz feladatok <small>rövid programok</small></h3></div>
+      <details>
+        <summary>1. Bemutatkozó kártya</summary>
+        <pre><code>nev = input("Neved: ")
+kor = int(input("Korod: "))
+hobbi = input("Kedvenc hobbid: ")
+print("----------")
+print("Név:", nev)
+print("Kor:", kor)
+print("Hobbi:", hobbi)
+print("----------")</code></pre>
+        <div class="explain"><b>Feladat:</b> adj hozzá egy színes kerítést a kártyához, például csillagokkal.</div>
+      </details>
+      <details>
+        <summary>2. Téglalap területe és kerülete</summary>
+        <pre><code>a = float(input("Szélesség: "))
+b = float(input("Magasság: "))
+print("Terület:", a * b)
+print("Kerület:", 2 * (a + b))</code></pre>
+        <div class="explain"><b>Feladat:</b> számold ki egy négyzet területét és kerületét is.</div>
+      </details>
+      <details>
+        <summary>3. Bolti pénztár</summary>
+        <pre><code>ar1 = int(input("Első termék ára: "))
+ar2 = int(input("Második termék ára: "))
+ar3 = int(input("Harmadik termék ára: "))
+osszeg = ar1 + ar2 + ar3
+print("Fizetendő:", osszeg)
+print("Visszajáró 5000 Ft-ból:", 5000 - osszeg)</code></pre>
+        <div class="explain"><b>Feladat:</b> írd ki, ha a fizetendő összeg nagyobb 5000 Ft-nál, akkor „Nincs elég pénz!”.</div>
+      </details>
+      <details>
+        <summary>4. Hőmérséklet besorolása</summary>
+        <pre><code>fok = int(input("Hány fok van? "))
+if fok &lt; 0:
+    print("Fagy van!")
+elif fok &lt; 15:
+    print("Hűvös van.")
+elif fok &lt; 25:
+    print("Kellemes az idő.")
+else:
+    print("Meleg van!")</code></pre>
+        <div class="explain"><b>Feladat:</b> adj hozzá egy kategóriát, ha 35 fok felett van.</div>
+      </details>
+      <details>
+        <summary>5. Szorzótábla</summary>
+        <pre><code>szam = int(input("Melyik szorzótábla kell? "))
+for i in range(1, 11):
+    print(szam, "x", i, "=", szam * i)</code></pre>
+        <div class="explain"><b>Feladat:</b> a program írja ki a táblát fordított sorrendben, 10-től 1-ig.</div>
+      </details>
+      <details>
+        <summary>6. Ismétlő dicséret</summary>
+        <pre><code>db = 0
+while db &lt; 5:
+    print("Ügyes vagy!")
+    db = db + 1</code></pre>
+        <div class="explain"><b>Feladat:</b> kérdezd meg, hányszor akarja a gép dicsérni, és annyiszor írja ki.</div>
+      </details>
+      <details>
+        <summary>7. Pozitív számok összege</summary>
+        <pre><code>osszeg = 0
+szam = int(input("Adj meg egy számot (0 = vége): "))
+while szam != 0:
+    if szam &gt; 0:
+        osszeg = osszeg + szam
+    szam = int(input("Következő szám (0 = vége): "))
+print("A pozitív számok összege:", osszeg)</code></pre>
+        <div class="explain"><b>Feladat:</b> számold meg a negatív számokat is, és írd ki a végén.</div>
+      </details>
+      <details>
+        <summary>8. Korhatár-ellenőrző</summary>
+        <pre><code>kor = int(input("Hány éves vagy? "))
+if kor &gt;= 18:
+    print("Beléphetsz.")
+else:
+    print("Sajnos még nem léphetsz be.")</code></pre>
+        <div class="explain"><b>Feladat:</b> írj a 12 év alattiaknak külön üzenetet.</div>
+      </details>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>Kiegészítő fogalmak <small>komment, break, continue</small></h3></div>
+      <p><b>Komment:</b> a <code>#</code> jel után írt szöveget a Python figyelmen kívül hagyja. A megjegyzés csak az olvasónak szól, a gép nem futtatja.</p>
+      <details>
+        <summary>Példakód: komment</summary>
+        <pre><code># Ez egy megjegyzés, a gép nem olvassa el.
+print("Ez lefut.")  # ez a sor is lefut</code></pre>
+      </details>
+      <p><b>break:</b> azonnal kilép a ciklusból, akkor is, ha a feltétel még igaz lenne. A ciklus utáni sor fut le.</p>
+      <details>
+        <summary>Példakód: break</summary>
+        <pre><code>for i in range(1, 11):
+    if i == 5:
+        break
+    print(i)
+print("Vége a ciklusnak!")</code></pre>
+        <div class="explain">Itt csak 1-től 4-ig íródnak ki a számok, aztán a break kiugrik a ciklusból.</div>
+      </details>
+      <p><b>continue:</b> kihagyja az aktuális lépést, és a ciklus a következővel folytatódik.</p>
+      <details>
+        <summary>Példakód: continue</summary>
+        <pre><code>for i in range(1, 8):
+    if i % 2 == 0:
+        continue
+    print(i)</code></pre>
+        <div class="explain">A páros számoknál a continue átugrik a print sorra, így csak a páratlanok íródnak ki.</div>
+      </details>
+      <div class="task"><b>Feladat:</b> írj programot, amely számokat kér, és a „0” beírásakor kilép. Csak a pozitív számokat írja ki (continue segítségével).</div>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>További bónusz feladatok <small>rövid programok</small></h3></div>
+      <details>
+        <summary>1. Négyzetszámok</summary>
+        <pre><code>for i in range(1, 11):
+    print(i, "négyzete:", i * i)</code></pre>
+        <div class="explain"><b>Feladat:</b> írasd ki a köbszámokat is (i * i * i).</div>
+      </details>
+      <details>
+        <summary>2. Háromszög területe</summary>
+        <pre><code>a = float(input("Alap: "))
+m = float(input("Magasság: "))
+print("Terület:", a * m / 2)</code></pre>
+        <div class="explain"><b>Feladat:</b> kérj be háromszög oldalait, és számold ki a kerületét is.</div>
+      </details>
+      <details>
+        <summary>3. A hét napjai</summary>
+        <pre><code>napok = ["hétfő", "kedd", "szerda", "csütörtök",
+         "péntek", "szombat", "vasárnap"]
+sorszam = int(input("Hányadik nap? (1-7) "))
+print("Ez a nap:", napok[sorszam - 1])</code></pre>
+        <div class="explain"><b>Feladat:</b> adj hibaüzenetet, ha a szám 1 és 7 között kívül esik.</div>
+      </details>
+      <details>
+        <summary>4. Összeadás „stop”-ig</summary>
+        <pre><code>osszeg = 0
+while True:
+    szam = input("Adj meg egy számot (stop = vége): ")
+    if szam == "stop":
+        break
+    osszeg = osszeg + int(szam)
+print("Összeg:", osszeg)</code></pre>
+        <div class="explain"><b>Feladat:</b> számold meg, hány számot adtak meg.</div>
+      </details>
+      <details>
+        <summary>5. A legnagyobb három szám közül</summary>
+        <pre><code>a = int(input("1. szám: "))
+b = int(input("2. szám: "))
+c = int(input("3. szám: "))
+if a &gt;= b and a &gt;= c:
+    legnagyobb = a
+elif b &gt;= c:
+    legnagyobb = b
+else:
+    legnagyobb = c
+print("A legnagyobb:", legnagyobb)</code></pre>
+        <div class="explain"><b>Feladat:</b> írd meg ugyanezt úgy, hogy listát használsz, és a <code>max()</code> függvényt hívod meg.</div>
+      </details>
+      <details>
+        <summary>6. Születési év</summary>
+        <pre><code>kor = int(input("Hány éves vagy? "))
+print("Körülbelül ilyen évben születtél:", 2026 - kor)</code></pre>
+        <div class="explain"><b>Feladat:</b> a program ellenőrizze, hogy a beírt kor realisztikus-e (0 és 120 között).</div>
+      </details>
+    </article>
+
+    <div class="quiz" id="quiz-m1" data-quiz="m1"></div>
+  </section>
+
+  <!-- ===================== II. MODUL ===================== -->
+  <section id="m2" class="module">
+    <header>
+      <div class="kicker">II. modul</div>
+      <h2>Adatok</h2>
+      <p>Listák, tömbök (rácsok) és szöveges adatok. A gyerekek megtanulják, hogyan kezelnek sok adatot egyszerre.</p>
+    </header>
+
+    <article class="lesson" data-key="m2-1">
+      <div class="lesson-head"><label><input type="checkbox"><h3>1. Lista <small>4 óra</small></h3></label></div>
+      <p>A lista több értéket tárol egy névvel. Az elemek sorszámozva vannak, 0-tól kezdve. A <code>lista[-1]</code> az utolsó elemet adja. A <code>len()</code> megmondja, hány elem van benne.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>gyumolcsok = ["alma", "körte", "szilva"]
+print(gyumolcsok[0])     # alma
+print(gyumolcsok[-1])    # szilva
+print(gyumolcsok[0:2])   # ['alma', 'körte']
+print(len(gyumolcsok))   # 3</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> készíts listát a kedvenc ételeidről, és írd ki a másodikat.</div>
+    </article>
+
+    <article class="lesson" data-key="m2-2">
+      <div class="lesson-head"><label><input type="checkbox"><h3>2. A lista módosítása <small>4 óra</small></h3></label></div>
+      <p>Új elemet a <code>append()</code> a végére, az <code>insert()</code> adott helyre tesz. A <code>remove()</code> törli az első egyező elemet. Egy elem átírható a sorszámával.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>lista = [3, 8, 1]
+lista.append(5)       # [3, 8, 1, 5]
+lista.insert(0, 10)   # [10, 3, 8, 1, 5]
+lista.remove(8)       # [10, 3, 1, 5]
+lista[1] = 99         # [10, 99, 1, 5]
+print(lista)</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> egy üres listába gyűjtsd be a felhasználó által beírt szavakat, amíg a „vége” szót nem írja be.</div>
+    </article>
+
+    <article class="lesson" data-key="m2-3">
+      <div class="lesson-head"><label><input type="checkbox"><h3>3. Lista bejárása <small>4 óra</small></h3></label></div>
+      <p>A <code>for</code> ciklus egyesével végigmegy a listán. Így összeadhatunk, megszámolhatunk vagy kikereshetünk elemeket.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>pontok = [12, 7, 20, 15]
+
+osszeg = 0
+for p in pontok:
+    osszeg = osszeg + p
+print("Összeg:", osszeg)
+
+legnagyobb = pontok[0]
+for p in pontok:
+    if p &gt; legnagyobb:
+        legnagyobb = p
+print("Legnagyobb:", legnagyobb)</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> számold ki a listában a páros számok darabszámát.</div>
+    </article>
+
+    <article class="lesson" data-key="m2-4">
+      <div class="lesson-head"><label><input type="checkbox"><h3>4. Tömb (rács) <small>4 óra</small></h3></label></div>
+      <p>A tömb olyan adatszerkezet, ahol az elemek táblázatba, sorokba és oszlopokba rendeződnek. Pythonban ezt úgy készítjük, hogy egy listában listák vannak. Az elemre két sorszámmal hivatkozunk: először a sor, utána az oszlop sorszáma.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>tabla = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+]
+
+print(tabla[1][2])    # 6
+
+for sor in tabla:
+    for elem in sor:
+        print(elem, end=" ")
+    print()</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> készíts 3×3-as táblázatot, amelyben az átlóba 1-est írsz, a többi helyre 0-t.</div>
+    </article>
+
+    <article class="lesson" data-key="m2-5">
+      <div class="lesson-head"><label><input type="checkbox"><h3>5. Hátultesztelős ciklus <small>4 óra</small></h3></label></div>
+      <p>A hátultesztelős ciklus előbb lefut, és csak utána ellenőriz. A Pythonban nincs külön kulcsszava, ezért <code>while True</code> ciklust használunk, és a <code>break</code> utasítással lépünk ki belőle, amikor a feltétel teljesül.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>while True:
+    jelszo = input("Add meg a jelszót: ")
+    if jelszo == "titkos":
+        break
+    print("Hibás, próbáld újra!")
+
+print("Sikerült, beléptél!")</code></pre>
+        <div class="explain">A ciklus legalább egyszer lefut, mert a feltétel a törzs után van.</div>
+      </details>
+      <div class="task"><b>Feladat:</b> írj programot, amely addig kéri a számot, amíg a játékos 10 és 20 közötti számot nem ad meg.</div>
+    </article>
+
+    <article class="lesson" data-key="m2-6">
+      <div class="lesson-head"><label><input type="checkbox"><h3>6. Szöveges adatok <small>4 óra</small></h3></label></div>
+      <p>A szöveg (str) is olyan, mint egy lista: betűi sorszámozottak. Olyan műveletek vannak rá, mint a <code>upper()</code> (nagybetűs), a <code>lower()</code> (kisbetűs) és a <code>len()</code>.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>szo = "Programozás"
+print(len(szo))          # 11
+print(szo.upper())       # PROGRAMOZÁS
+print(szo[0:3])          # Pro
+print("gram" in szo.lower())  # True</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> kérj be egy szót, és írd ki fordítva (tipp: <code>szo[::-1]</code>).</div>
+    </article>
+
+    <article class="lesson" data-key="m2-7">
+      <div class="lesson-head"><label><input type="checkbox"><h3>7. Egymásba ágyazott ciklusok <small>4 óra</small></h3></label></div>
+      <p>Ha egy ciklus belsejében másik ciklus fut, a belső minden külső lépésnél végigfut. Így szorzótáblát vagy rácsot lehet rajzolni.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>for i in range(1, 4):
+    for j in range(1, 4):
+        print(i * j, end="\t")
+    print()</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> rajzolj ki egy csillagokból álló háromszöget: az első sorban 1 csillag, a másodikban 2, és így tovább 5-ig.</div>
+    </article>
+
+    <article class="lesson" data-key="m2-8">
+      <div class="lesson-head"><label><input type="checkbox"><h3>8. Gyakorlat: átlag és statisztika <small>4 óra</small></h3></label></div>
+      <p>A lista elemeinek száma és összege alapján kiszámolható az átlag. Ez egy valódi feladat: például egy osztály jegyeinek átlagát.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>szamok = [4, 8, 15, 16, 23]
+atlag = sum(szamok) / len(szamok)
+print("Átlag:", atlag)     # 13.2</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írj programot, amely bekér 5 jegyet, majd kiírja az átlagot és a legjobb jegyet.</div>
+    </article>
+
+    <article class="lesson" data-key="m2-9">
+      <div class="lesson-head"><label><input type="checkbox"><h3>9. Játék: kvíz a listából <small>4 óra</small></h3></label></div>
+      <p>A kérdéseket és válaszokat egy listában tároljuk. A program végigkérdezi őket, és a végén megmondja a pontszámot.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>kerdesek = [
+    ("Mennyi 2 + 2?", "4"),
+    ("Mi Magyarország fővárosa?", "Budapest"),
+    ("Hány lába van egy pók?", "8"),
+]
+
+pontok = 0
+for kerdes, valasz in kerdesek:
+    tipp = input(kerdes + " ")
+    if tipp.lower() == valasz.lower():
+        pontok = pontok + 1
+        print("Helyes!")
+    else:
+        print("Sajnos nem. A válasz:", valasz)
+
+print("Pontod:", pontok, "/", len(kerdesek))</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> bővítsd a kvízt legalább öt kérdéssel a saját témáidból.</div>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>Bónusz feladatok <small>rövid programok</small></h3></div>
+      <details>
+        <summary>1. Páros és páratlan számok</summary>
+        <pre><code>szamok = [3, 8, 11, 14, 7, 20]
+parosak = []
+paratlanok = []
+for sz in szamok:
+    if sz % 2 == 0:
+        parosak.append(sz)
+    else:
+        paratlanok.append(sz)
+print("Páros:", parosak)
+print("Páratlan:", paratlanok)</code></pre>
+        <div class="explain"><b>Feladat:</b> számold meg, hány páros szám van a listában.</div>
+      </details>
+      <details>
+        <summary>2. A legkisebb elem</summary>
+        <pre><code>szamok = [42, 17, 93, 8, 55]
+legkisebb = szamok[0]
+for sz in szamok:
+    if sz &lt; legkisebb:
+        legkisebb = sz
+print("A legkisebb:", legkisebb)</code></pre>
+        <div class="explain"><b>Feladat:</b> ugyanígy keresd meg a legnagyobb és a legkisebb elem közötti különbséget.</div>
+      </details>
+      <details>
+        <summary>3. Lista fordítva</summary>
+        <pre><code>szavak = ["alma", "körte", "szilva"]
+print(szavak[::-1])
+
+for szo in reversed(szavak):
+    print(szo)</code></pre>
+        <div class="explain"><b>Feladat:</b> írd ki a listát úgy, hogy a betűk is fordítva jelenjenek meg.</div>
+      </details>
+      <details>
+        <summary>4. Nevek nagybetűvel</summary>
+        <pre><code>nevek = ["anna", "bence", "csilla"]
+for nev in nevek:
+    print(nev.capitalize())</code></pre>
+        <div class="explain"><b>Feladat:</b> kérj be 3 nevet, tárold listában, és írd ki ABC-sorrendben (tipp: <code>sorted()</code>).</div>
+      </details>
+      <details>
+        <summary>5. Szavak megszámolása</summary>
+        <pre><code>mondat = input("Írj egy mondatot: ")
+szavak = mondat.split()
+print("A mondatban", len(szavak), "szó van.")</code></pre>
+        <div class="explain"><b>Feladat:</b> számold meg a mondat betűit is, szóközök nélkül.</div>
+      </details>
+      <details>
+        <summary>6. Jelszó-ellenőrző</summary>
+        <pre><code>jelszo = input("Adj meg egy jelszót: ")
+if len(jelszo) &lt; 8:
+    print("Túl rövid! Legalább 8 karakter kell.")
+else:
+    print("Jó jelszó.")</code></pre>
+        <div class="explain"><b>Feladat:</b> a program addig kérjen jelszót, amíg az nem elég hosszú (<code>while</code> ciklussal).</div>
+      </details>
+      <details>
+        <summary>7. Napi hőmérséklet átlaga</summary>
+        <pre><code>homersekletek = [12, 15, 9, 18, 14]
+atlag = sum(homersekletek) / len(homersekletek)
+print("Átlaghőmérséklet:", round(atlag, 1))</code></pre>
+        <div class="explain"><b>Feladat:</b> írd ki a legmelegebb és a leghidegebb napot is.</div>
+      </details>
+      <details>
+        <summary>8. Szorzótábla lista</summary>
+        <pre><code>tabla = []
+for i in range(1, 4):
+    sor = []
+    for j in range(1, 4):
+        sor.append(i * j)
+    tabla.append(sor)
+print(tabla)</code></pre>
+        <div class="explain"><b>Feladat:</b> készíts 5×5-ös szorzótáblát listák listájaként.</div>
+      </details>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>Kiegészítő fogalmak <small>szótár, tuple, beépített függvények</small></h3></div>
+      <p><b>Szótár (dict):</b> kulcs és érték párokat tárol. A kulcs alapján keresünk, nem sorszám alapján. Kapcsos zárójelet használunk.</p>
+      <details>
+        <summary>Példakód: szótár</summary>
+        <pre><code>pontok = {"Anna": 12, "Bence": 9}
+print(pontok["Anna"])          # 12
+pontok["Csilla"] = 15          # új pár hozzáadása
+for nev, pont in pontok.items():
+    print(nev, pont)</code></pre>
+      </details>
+      <p><b>Tuple (rendezett elemsor):</b> olyan, mint a lista, de nem módosítható. Kerek zárójelet használunk.</p>
+      <details>
+        <summary>Példakód: tuple</summary>
+        <pre><code>koordinata = (3, 5)
+print(koordinata[0])     # 3
+# koordinata[0] = 7      # ez hibát adna, mert a tuple nem módosítható</code></pre>
+      </details>
+      <p><b>Beépített függvények listához:</b> a <code>sum()</code> összeget, a <code>min()</code> a legkisebbet, a <code>max()</code> a legnagyobbat, a <code>sorted()</code> rendezett listát ad vissza.</p>
+      <details>
+        <summary>Példakód: beépített függvények</summary>
+        <pre><code>szamok = [4, 9, 1]
+print(sum(szamok), min(szamok), max(szamok))   # 14 1 9
+print(sorted(szamok))                          # [1, 4, 9]</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> készíts szótárat öt tanuló nevéhez és pontszámához. Írd ki a legjobb tanulót.</div>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>További bónusz feladatok <small>rövid programok</small></h3></div>
+      <details>
+        <summary>1. Pontszámok szótárból</summary>
+        <pre><code>pontok = {"Anna": 12, "Bence": 9, "Csilla": 15}
+osszes = 0
+for nev in pontok:
+    print(nev, "pontja:", pontok[nev])
+    osszes = osszes + pontok[nev]
+print("Összesen:", osszes)</code></pre>
+        <div class="explain"><b>Feladat:</b> számold ki az átlagot is.</div>
+      </details>
+      <details>
+        <summary>2. Nagy számok kiválogatása</summary>
+        <pre><code>szamok = [3, 15, 8, 22, 10, 11]
+nagyok = []
+for sz in szamok:
+    if sz &gt; 10:
+        nagyok.append(sz)
+print("10-nél nagyobbak:", nagyok)</code></pre>
+        <div class="explain"><b>Feladat:</b> válogasd ki a 5 és 10 közé eső számokat is.</div>
+      </details>
+      <details>
+        <summary>3. Két lista összefűzése</summary>
+        <pre><code>a = [1, 2]
+b = [3, 4]
+c = a + b
+print(c)       # [1, 2, 3, 4]
+a.extend(b)
+print(a)       # [1, 2, 3, 4]</code></pre>
+        <div class="explain"><b>Feladat:</b> írj programot, amely két nevekből álló listát egyesít, és kiírja, hány név van összesen.</div>
+      </details>
+      <details>
+        <summary>4. Betűk megszámolása</summary>
+        <pre><code>nev = input("Írj egy nevet: ")
+print("Az „a” betű", nev.count("a"), "alkalommal szerepel.")</code></pre>
+        <div class="explain"><b>Feladat:</b> számold meg, hányszor szerepel a szóban a magánhangzók mindegyike.</div>
+      </details>
+      <details>
+        <summary>5. Keresés a rácsban</summary>
+        <pre><code>tabla = [[1, 2, 3],
+         [4, 5, 6],
+         [7, 8, 9]]
+keres = int(input("Melyik számot keresed? "))
+for i, sor in enumerate(tabla):
+    for j, elem in enumerate(sor):
+        if elem == keres:
+            print("Megtaláltam: sor", i, "oszlop", j)</code></pre>
+        <div class="explain"><b>Feladat:</b> írd ki, ha a keresett szám nincs a táblában.</div>
+      </details>
+      <details>
+        <summary>6. Lista statisztika</summary>
+        <pre><code>adatok = []
+for i in range(5):
+    adatok.append(int(input("Adj meg egy számot: ")))
+print("Összeg:", sum(adatok))
+print("Átlag:", sum(adatok) / len(adatok))
+print("Legkisebb:", min(adatok), "Legnagyobb:", max(adatok))</code></pre>
+      </details>
+    </article>
+
+    <div class="quiz" id="quiz-m2" data-quiz="m2"></div>
+  </section>
+
+  <!-- ===================== III. MODUL ===================== -->
+  <section id="m3" class="module">
+    <header>
+      <div class="kicker">III. modul</div>
+      <h2>Függvények és kisprojektek</h2>
+      <p>Az eljárások és függvények segítségével a programot kisebb, újrahasználható darabokra bontjuk. A modul végén a gyerekek önálló kis játékot írnak.</p>
+    </header>
+
+    <article class="lesson" data-key="m3-1">
+      <div class="lesson-head"><label><input type="checkbox"><h3>1. Eljárás <small>4 óra</small></h3></label></div>
+      <p>Az eljárás (függvény) egy névvel ellátott utasítássor. A <code>def</code> kulcsszóval definiáljuk, és a nevével hívjuk meg. Egyszer megírjuk, többször használjuk.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>def koszon():
+    print("Helló!")
+    print("Jó munkát kívánok!")
+
+koszon()
+koszon()</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írj eljárást, amely egy keretet rajzol ki csillagokból, és hívd meg kétszer.</div>
+    </article>
+
+    <article class="lesson" data-key="m3-2">
+      <div class="lesson-head"><label><input type="checkbox"><h3>2. Függvény paraméterrel és visszatérési értékkel <small>4 óra</small></h3></label></div>
+      <p>A paraméter az a bemenet, amit a függvénynek átadunk. A <code>return</code> utasítás visszaad egy értéket a hívónak. Ha nincs <code>return</code>, a függvény „nem ad vissza semmit”.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>def negyzet(szam):
+    return szam * szam
+
+print(negyzet(4))     # 16
+
+def osszeg_es_atlag(a, b):
+    ossz = a + b
+    return ossz, ossz / 2
+
+ossz, atl = osszeg_es_atlag(3, 7)
+print(ossz, atl)      # 10 5.0</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írj függvényt, amely egy hőmérsékletet Celsius-ról Fahrenheitre vált át (F = C × 9 / 5 + 32).</div>
+    </article>
+
+    <article class="lesson" data-key="m3-3">
+      <div class="lesson-head"><label><input type="checkbox"><h3>3. Változók hatóköre <small>4 óra</small></h3></label></div>
+      <p>A függvényen belül létrehozott változó lokális: csak a függvényben látszik. A függvényen kívül létrehozott változó globális. A függvényen belül ne írjunk globális változót, inkább adjunk át paramétert.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>hely = "globális"
+
+def fuggveny():
+    hely = "lokális"
+    print(hely)
+
+fuggveny()        # lokális
+print(hely)       # globális</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> mit fog kiírni a program, ha a függvényben módosítod a változó értékét? Döntsd el előre, aztán próbáld ki.</div>
+    </article>
+
+    <article class="lesson" data-key="m3-4">
+      <div class="lesson-head"><label><input type="checkbox"><h3>4. Modulok: random és math <small>4 óra</small></h3></label></div>
+      <p>A Python tele van kész eszközökkel. Ezeket az <code>import</code> utasítással hívjuk be. A <code>random</code> modul véletlent ad, a <code>math</code> modul matematikai függvényeket.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>import random
+import math
+
+print(random.randint(1, 6))           # dobókocka
+print(math.sqrt(16))                  # 4.0
+print(random.choice(["kő", "papír", "olló"]))</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írj programot, amely két dobókockát dob, és kiírja az összeget.</div>
+    </article>
+
+    <article class="lesson" data-key="m3-5">
+      <div class="lesson-head"><label><input type="checkbox"><h3>5. Játék: kő, papír, olló <small>4 óra</small></h3></label></div>
+      <p>A gép véletlenszerűen választ. A játékos megadja a választását, a program pedig eldönti, ki nyert.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>import random
+
+valasztasok = ["kő", "papír", "olló"]
+gep = random.choice(valasztasok)
+jatekos = input("Kő, papír vagy olló? ")
+
+print("A gép:", gep)
+if jatekos == gep:
+    print("Döntetlen!")
+elif (jatekos == "kő" and gep == "olló") or (jatekos == "papír" and gep == "kő") or (jatekos == "olló" and gep == "papír"):
+    print("Te nyertél!")
+else:
+    print("A gép nyert.")</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> egészítsd ki a játékot úgy, hogy háromszor játszanak, és a végén kiírja az állást.</div>
+    </article>
+
+    <article class="lesson" data-key="m3-6">
+      <div class="lesson-head"><label><input type="checkbox"><h3>6. Hibák kezelése <small>4 óra</small></h3></label></div>
+      <p>Ha a program hibába futna (például szöveget próbálunk számmá alakítani), a <code>try</code> és <code>except</code> szerkezettel elkapjuk a hibát, és szépen reagálunk rá.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>try:
+    szam = int(input("Adj meg egy számot: "))
+    print("Duplája:", szam * 2)
+except ValueError:
+    print("Ez nem szám volt!")</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> a számkitaláló játékot védd meg attól, hogy szöveget írjanak be.</div>
+    </article>
+
+    <article class="lesson" data-key="m3-7">
+      <div class="lesson-head"><label><input type="checkbox"><h3>7. A program szerkezete <small>4 óra</small></h3></label></div>
+      <p>Nagyobb programot érdemes függvényekre bontani. A <code>main()</code> függvény irányítja a programot. A <code>if __name__ == "__main__":</code> sor azt biztosítja, hogy a program csak akkor induljon, ha közvetlenül futtatjuk.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>def udvozlet():
+    print("Üdv a játékban!")
+
+def main():
+    udvozlet()
+    print("Játék vége.")
+
+if __name__ == "__main__":
+    main()</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> bontsd a kő-papír-olló játékodat legalább három függvényre.</div>
+    </article>
+
+    <article class="lesson" data-key="m3-8">
+      <div class="lesson-head"><label><input type="checkbox"><h3>8. Hibakeresés <small>4 óra</small></h3></label></div>
+      <p>Háromféle hiba van: a <b>szintaktikai</b> hiba (elgépelés, hiányzó kettőspont), a <b>futásidejű</b> hiba (futás közben áll meg a program) és a <b>logikai</b> hiba (lefut, de rossz eredményt ad). A logikai hibát a <code>print()</code>-tel tudjuk a legkönnyebben megkeresni.</p>
+      <details>
+        <summary>Példakód megnyitása</summary>
+        <pre><code>def atlag(szamok):
+    osszeg = 0
+    for sz in szamok:
+        osszeg = osszeg + sz
+        print("Eddig:", osszeg)     # ellenőrző kiírás
+    return osszeg / len(szamok)
+
+print(atlag([2, 4, 6]))</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> keress hibát a fenti kódban, ha a visszatérési értéket rossz helyre írjuk. Mi a helyes sorrend?</div>
+    </article>
+
+    <article class="lesson" data-key="m3-9">
+      <div class="lesson-head"><label><input type="checkbox"><h3>9. Záróprojekt: kvízjáték <small>4 óra</small></h3></label></div>
+      <p>A modul végén a gyerekek saját kvízjátékot készítenek. Legyen benne legalább három függvény, lista a kérdésekről, hibakezelés és pontszámítás.</p>
+      <div class="task"><b>Követelmények:</b> (1) legalább öt kérdés, (2) függvény a kérdés feltevésére, (3) függvény a pontszám kiírására, (4) hibás szám elkapása <code>try</code>-jal, (5) játék végén új körre kérdezés.</div>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>Bónusz feladatok <small>rövid programok</small></h3></div>
+      <details>
+        <summary>1. Összeadó függvény</summary>
+        <pre><code>def osszead(a, b, c=0):
+    return a + b + c
+
+print(osszead(2, 3))        # 5
+print(osszead(2, 3, 10))    # 15</code></pre>
+        <div class="explain"><b>Feladat:</b> írj függvényt, amely négy számot kap, és visszaadja az összegüket.</div>
+      </details>
+      <details>
+        <summary>2. Prímszám-ellenőrző</summary>
+        <pre><code>def prim_e(szam):
+    if szam &lt; 2:
+        return False
+    for i in range(2, szam):
+        if szam % i == 0:
+            return False
+    return True
+
+for n in range(1, 20):
+    if prim_e(n):
+        print(n, "prím")</code></pre>
+        <div class="explain"><b>Feladat:</b> írasd ki az első 10 prímszámot.</div>
+      </details>
+      <details>
+        <summary>3. Szó ismétlése</summary>
+        <pre><code>def ismetel(szo, darab):
+    return szo * darab
+
+print(ismetel("Hahó! ", 3))</code></pre>
+        <div class="explain"><b>Feladat:</b> kérd be a szót és a darabszámot a felhasználótól, és a függvénnyel írasd ki.</div>
+      </details>
+      <details>
+        <summary>4. Lottószámok</summary>
+        <pre><code>import random
+
+lottoszamok = random.sample(range(1, 91), 5)
+lottoszamok.sort()
+print("Ma a lottószámok:", lottoszamok)</code></pre>
+        <div class="explain"><b>Feladat:</b> írj programot, amely 6 egyedi számot húz 1 és 45 között.</div>
+      </details>
+      <details>
+        <summary>5. Kockadobó játék</summary>
+        <pre><code>import random
+
+def dobas():
+    return random.randint(1, 6)
+
+jatekos = dobas() + dobas()
+gep = dobas() + dobas()
+print("Te:", jatekos, "| A gép:", gep)
+if jatekos &gt; gep:
+    print("Te nyertél!")
+elif jatekos &lt; gep:
+    print("A gép nyert.")
+else:
+    print("Döntetlen!")</code></pre>
+        <div class="explain"><b>Feladat:</b> három körben játsszatok, és a végén írd ki az állást.</div>
+      </details>
+      <details>
+        <summary>6. Egyszerű számológép</summary>
+        <pre><code>def szamol(a, b, muvelet):
+    if muvelet == "+":
+        return a + b
+    elif muvelet == "-":
+        return a - b
+    elif muvelet == "*":
+        return a * b
+    elif muvelet == "/":
+        return a / b
+
+try:
+    x = float(input("Első szám: "))
+    op = input("Művelet (+ - * /): ")
+    y = float(input("Második szám: "))
+    print("Eredmény:", szamol(x, y, op))
+except ValueError:
+    print("Számot adj meg!")
+except ZeroDivisionError:
+    print("Nullával nem lehet osztani!")</code></pre>
+        <div class="explain"><b>Feladat:</b> a számológép tudjon hatványozni is.</div>
+      </details>
+      <details>
+        <summary>7. Névjegy függvénnyel</summary>
+        <pre><code>def nevjegy(nev, varos):
+    print("-" * 20)
+    print("Név:", nev)
+    print("Város:", varos)
+    print("-" * 20)
+
+nevjegy("Dóra", "Budapest")
+nevjegy("Máté", "Szeged")</code></pre>
+        <div class="explain"><b>Feladat:</b> bővítsd a névjegyet egy harmadik adattal, például kedvenc színnel.</div>
+      </details>
+      <details>
+        <summary>8. Tippjáték függvényekkel</summary>
+        <pre><code>import random
+
+def kerdes():
+    return random.randint(1, 10)
+
+szam = kerdes()
+tipp = int(input("Melyik számra gondoltam (1-10)? "))
+if tipp == szam:
+    print("Eltaláltad!")
+else:
+    print("Nem, a szám:", szam)</code></pre>
+        <div class="explain"><b>Feladat:</b> adj három tippet, és írd ki, hány találat lett.</div>
+      </details>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>Kiegészítő fogalmak <small>None és a függvény-dokumentáció</small></h3></div>
+      <p><b>None:</b> a Python „semmi” értéke. Ha egy függvénynek nincs <code>return</code> utasítása, a visszatérési értéke None lesz.</p>
+      <details>
+        <summary>Példakód: None</summary>
+        <pre><code>def koszon():
+    print("Szia!")
+
+eredmeny = koszon()
+print(eredmeny)     # None</code></pre>
+      </details>
+      <p><b>Dokumentáció (docstring):</b> a függvény első sorába írt három idézőjeles szöveg leírja, mit csinál a függvény. Ezt a kódolók mások számára írják.</p>
+      <details>
+        <summary>Példakód: docstring</summary>
+        <pre><code>def negyzet(szam):
+    """Visszaadja a szám négyzetét."""
+    return szam * szam
+
+print(negyzet.__doc__)</code></pre>
+      </details>
+      <div class="task"><b>Feladat:</b> írj egy függvényt, amelynek van docstringje, és a docstringben írd le, mit csinál, és milyen bemenetet vár.</div>
+    </article>
+
+    <article class="bonus">
+      <div class="lesson-head"><h3>További bónusz feladatok <small>rövid programok</small></h3></div>
+      <details>
+        <summary>1. Nagyobb szám függvénnyel</summary>
+        <pre><code>def nagyobb(a, b):
+    if a &gt; b:
+        return a
+    return b
+
+print(nagyobb(4, 9))    # 9</code></pre>
+        <div class="explain"><b>Feladat:</b> írj olyan függvényt, amely három szám közül adja vissza a legkisebbet.</div>
+      </details>
+      <details>
+        <summary>2. Páros számok szűrése</summary>
+        <pre><code>def parosak(lista):
+    eredmeny = []
+    for sz in lista:
+        if sz % 2 == 0:
+            eredmeny.append(sz)
+    return eredmeny
+
+print(parosak([1, 2, 3, 4, 5, 6]))   # [2, 4, 6]</code></pre>
+      </details>
+      <details>
+        <summary>3. Hőmérséklet-átváltó</summary>
+        <pre><code>def c_to_f(c):
+    return c * 9 / 5 + 32
+
+print(c_to_f(20))     # 68.0</code></pre>
+        <div class="explain"><b>Feladat:</b> írj függvényt, amely Fahrenheitből Celsiusra vált.</div>
+      </details>
+      <details>
+        <summary>4. Véletlen sorsolás</summary>
+        <pre><code>import random
+
+nevek = ["Anna", "Bence", "Csilla", "Dani"]
+print("A szerencsés:", random.choice(nevek))</code></pre>
+        <div class="explain"><b>Feladat:</b> sorsolj ki két tanulót úgy, hogy ne legyen ugyanaz a két név.</div>
+      </details>
+      <details>
+        <summary>5. Biztos bemenet függvénnyel</summary>
+        <pre><code>def szam_bekeres():
+    while True:
+        try:
+            return int(input("Adj meg egy számot: "))
+        except ValueError:
+            print("Ez nem szám, próbáld újra!")
+
+szam = szam_bekeres()
+print("Köszi, a szám:", szam)</code></pre>
+        <div class="explain"><b>Feladat:</b> bővítsd úgy, hogy csak 1 és 100 közötti számot fogadjon el.</div>
+      </details>
+      <details>
+        <summary>6. Hatos dobás</summary>
+        <pre><code>import random
+
+db = 0
+while True:
+    dobas = random.randint(1, 6)
+    db = db + 1
+    if dobas == 6:
+        print("Hatost dobtál", db, "dobásból!")
+        break</code></pre>
+        <div class="explain"><b>Feladat:</b> számold meg, átlagosan hány dobás kell a hatoshoz. Futtasd többször és jegyezd fel.</div>
+      </details>
+    </article>
+
+    <div class="quiz" id="quiz-m3" data-quiz="m3"></div>
+  </section>
+
+  <section class="tip">
+    <h3>Tanári megjegyzés</h3>
+    <p class="note">Minden leckénél elég a magyarázat és a példakód. A feladatokat a gyerekek párban is megoldhatják. A kvízek után érdemes megbeszélni a hibás válaszokat.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // Lecke-haladás mentése (csak a böngészőben, ha engedélyezett)
+  var items = document.querySelectorAll('.lesson');
+  var total = items.length;
+  var prog = document.getElementById('progress');
+  function load(){ try { return JSON.parse(localStorage.getItem('pyprog') || '{}'); } catch(e){ return {}; } }
+  function save(s){ try { localStorage.setItem('pyprog', JSON.stringify(s)); } catch(e){} }
+  function refresh(){
+    var done = 0;
+    items.forEach(function(el){
+      var cb = el.querySelector('input[type=checkbox]');
+      if (cb.checked){ done++; el.classList.add('done'); } else { el.classList.remove('done'); }
+    });
+    prog.textContent = 'Haladás: ' + done + ' / ' + total + ' lecke kész';
+  }
+  var state = load();
+  items.forEach(function(el){
+    var cb = el.querySelector('input[type=checkbox]');
+    var key = el.getAttribute('data-key');
+    cb.checked = !!state[key];
+    cb.addEventListener('change', function(){
+      state[key] = cb.checked;
+      save(state);
+      refresh();
+    });
+  });
+  refresh();
+
+  // Kvízek
+  var quizzes = {
+    m1: [
+      {q:"Melyik típus tárolja a 3.5 számot?", a:["int","float","str","bool"], c:1},
+      {q:"Mi lesz a 7 // 2 eredménye?", a:["3.5","3","4","1"], c:1},
+      {q:"Melyik ciklus ellenőriz először, és csak utána fut?", a:["for","while","Egyik sem","Mindkettő"], c:1},
+      {q:"Mely számokat adja a range(3)?", a:["0, 1, 2","1, 2, 3","0, 1, 2, 3","3"], c:0},
+      {q:"Mi lesz az eredmény: True and False?", a:["True","False","Hiba","Nem tudom"], c:1},
+      {q:"Mi lesz a 2 ** 3 értéke?", a:["6","8","5","9"], c:1},
+      {q:"Mit ír ki a print(10 % 4)?", a:["2","2.5","4","1"], c:0},
+      {q:"Milyen típusú értéket ad vissza az input()?", a:["int","float","str","bool"], c:2},
+      {q:"Mit csinál a for i in range(4) ciklus, hányszor fut le?", a:["3-szor","4-szer","5-ször","Egyszer sem"], c:1},
+      {q:"Mi a helyes behúzás egy if utasítás törzsében?", a:["Kötelező behúzás, például 4 szóköz","Nincs behúzás","Csak tabulátor lehet","Bármennyi, nem számít"], c:0}
+    ],
+    m2: [
+      {q:"Mit ad a lista[-1]?", a:["Az első elemet","Az utolsó elemet","A hosszát","Hibát"], c:1},
+      {q:"Melyik metódus tesz elemet a lista végére?", a:["insert","append","remove","pop"], c:1},
+      {q:"Hogyan oldjuk meg a hátultesztelős ciklust Pythonban?", a:["do-while","while True + break","repeat","until"], c:1},
+      {q:"Mit ad a tabla[0][2], ha tabla = [[1,2,3],[4,5,6]]?", a:["1","2","3","6"], c:2},
+      {q:"Mit ad az \"abc\".upper()?", a:["abc","ABC","Abc","Hiba"], c:1},
+      {q:"Mit ad a len([1, 2, 3, 4])?", a:["3","4","10","1"], c:1},
+      {q:"Mi lesz az 'abc'[1] értéke?", a:["a","b","c","abc"], c:1},
+      {q:"Melyik metódus törli az utolsó elemet, és vissza is adja?", a:["remove","pop","append","clear"], c:1},
+      {q:"Mit ad a sum([2, 3, 5])?", a:["10","5","3","Hiba"], c:0},
+      {q:"Mit ad a 'a' in 'alma' kifejezés?", a:["True","False","Hiba","'a'"], c:0},
+      {q:"Mit ad a list(range(3))?", a:["[0, 1, 2]","[1, 2, 3]","[0, 1, 2, 3]","Hiba"], c:0}
+    ],
+    m3: [
+      {q:"Melyik kulcsszóval definiálunk függvényt?", a:["func","def","fun","create"], c:1},
+      {q:"Mit ad vissza az a függvény, amelynek nincs return utasítása?", a:["0","Üres szöveget","None","Hibát"], c:2},
+      {q:"Melyik modul ad véletlen számot?", a:["math","random","time","sys"], c:1},
+      {q:"Mire való a try és except?", a:["Ciklus készítésére","Hibák elkapására","Változó törlésére","Fájl megnyitására"], c:1},
+      {q:"Hol látható egy függvényen belül létrehozott változó?", a:["Mindenhol","Csak a függvényben","Csak a főprogramban","Sehol"], c:1},
+      {q:"Hogyan hívjuk meg a ko nevű függvényt?", a:["ko","ko()","def ko()","call ko"], c:1},
+      {q:"Mit jelent a paraméter?", a:["A függvény neve","A függvénynek átadott bemenet","A visszatérési érték","A hiba neve"], c:1},
+      {q:"Mi a math.sqrt(25) eredménye?", a:["5","5.0","25","12.5"], c:1},
+      {q:"Mire való az if __name__ == \"__main__\" sor?", a:["Hibát dob","Akkor fut a program, ha közvetlenül indítjuk","Változót ír","Ciklust indít"], c:1},
+      {q:"Mi a docstring?", a:["Hibaüzenet","Függvény leírása három idézőjelben","Egy ciklus neve","Változó típusa"], c:1}
+    ]
+  };
+  document.querySelectorAll('.quiz').forEach(function(box){
+    var key = box.getAttribute('data-quiz');
+    var list = quizzes[key];
+    var html = '<div class="kicker">Kvíz</div><h2>' + ({m1:'I. modul kvíz',m2:'II. modul kvíz',m3:'III. modul kvíz'})[key] + '</h2>';
+    list.forEach(function(item, i){
+      html += '<div class="q"><p>' + (i+1) + '. ' + item.q + '</p>';
+      item.a.forEach(function(opt, j){
+        html += '<label><input type="radio" name="' + key + i + '" value="' + j + '"> ' + opt + '</label>';
+      });
+      html += '</div>';
+    });
+    html += '<button type="button">Kiértékelés</button><div class="score" aria-live="polite"></div>';
+    box.innerHTML = html;
+    box.querySelector('button').addEventListener('click', function(){
+      var right = 0;
+      list.forEach(function(item, i){
+        var sel = box.querySelector('input[name="' + key + i + '"]:checked');
+        if (sel && Number(sel.value) === item.c) right++;
+      });
+      var sc = box.querySelector('.score');
+      sc.textContent = 'Eredmény: ' + right + ' / ' + list.length;
+      sc.className = 'score ' + (right >= Math.ceil(list.length * 0.6) ? 'good' : 'meh');
+    });
+  });
+})();
+</script>
+
+</body></html>
